@@ -13,7 +13,10 @@ query(process.argv)
 
 
 function queryConcert (args){
-    var url = "https://rest.bandsintown.com/artists/" + args[3] + "/events?app_id=codingbootcamp";
+    if (args.length < 4){
+        args.push("");
+    }
+    var url = "https://rest.bandsintown.com/artists/" + combineMultipleArgs(args) + "/events?app_id=codingbootcamp";
     axios.get(url).then(function (response) {
         var data = response.data[0];
         console.log(data.venue.name);
@@ -32,7 +35,7 @@ function querySpotify (args){
     }
     spotify.search({
         type : "track",
-        query : args[3]
+        query : combineMultipleArgs(args)
     },function (err, data){
         if (err) {
             return console.log('Error occurred: ' + err);
@@ -50,11 +53,13 @@ function querySpotify (args){
     });
 }
 
+
+
 function queryMovie(args){
     if (args.length < 4) {
         args.push("Mr. Nobody")
     }
-    url = "http://www.omdbapi.com/?apikey=trilogy&t=" + args[3];
+    url = "http://www.omdbapi.com/?apikey=trilogy&t=" + combineMultipleArgs(args);
 
     axios.get(url).then(function (response) {
         var data = response.data;
@@ -70,6 +75,15 @@ function queryMovie(args){
         console.log("*********************************");
         console.log(error);
     }); 
+}
+
+function combineMultipleArgs (args){
+    var string = "";
+    for (var i = 3; i < args.length - 1;i++){
+        string += args[i] + "+";
+    }
+    string += args[args.length -1];
+    return string;
 }
 
 function query(args){
